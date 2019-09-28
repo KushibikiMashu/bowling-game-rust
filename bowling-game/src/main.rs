@@ -100,6 +100,13 @@ mod tests {
         assert_eq!(24, game.score());
     }
 
+    #[test]
+    fn all_strike() {
+        let mut game = start();
+        many_rolls(&mut game, 10, 20);
+        assert_eq!(300, game.score());
+    }
+
     fn start() -> Game {
         Game::new()
     }
