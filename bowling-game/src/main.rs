@@ -29,6 +29,10 @@ mod tests {
 
     #[test]
     fn all_gutter() {
-        Game::new().roll(0);
+        let mut game = Game::new();
+        for _ in 0..20 {
+            game.roll(0);
+        }
+        assert_eq!(0, game.score)
     }
 }
