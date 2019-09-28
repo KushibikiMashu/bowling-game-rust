@@ -35,4 +35,13 @@ mod tests {
         }
         assert_eq!(0, game.score)
     }
+
+    #[test]
+    fn all_one_pin(){
+        let mut game = Game::new();
+        for _ in 0..20 {
+            game.roll(1);
+        }
+        assert_eq!(20, game.score);
+    }
 }
