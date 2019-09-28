@@ -28,6 +28,9 @@ impl Game {
             if self.is_spare(frame_index) {
                 score += 10 + self.rolls[frame_index + 2];
                 frame_index += 2;
+            } else if self.is_strike(frame_index) {
+                score += 10 + self.rolls[frame_index + 1] + self.rolls[frame_index + 2];
+                frame_index += 1;
             } else {
                 score += self.rolls[frame_index] + self.rolls[frame_index + 1];
                 frame_index += 2;
@@ -38,6 +41,10 @@ impl Game {
 
     fn is_spare(&self, i: usize) -> bool {
         self.rolls[i] + self.rolls[i + 1] == 10
+    }
+
+    fn is_strike(&self, i: usize) -> bool {
+        self.rolls[frame_index] == 10
     }
 }
 
