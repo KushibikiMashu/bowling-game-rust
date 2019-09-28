@@ -26,25 +26,37 @@ impl Game {
         let mut frame_index = 0;
         for _ in 0..10 {
             if self.is_spare(frame_index) {
-                score += 10 + self.rolls[frame_index + 2];
+                score += 10 + self.spare_bonus(frame_index);
                 frame_index += 2;
             } else if self.is_strike(frame_index) {
-                score += 10 + self.rolls[frame_index + 1] + self.rolls[frame_index + 2];
+                score += 10 + self.strike_bonus(frame_index);
                 frame_index += 1;
             } else {
-                score += self.rolls[frame_index] + self.rolls[frame_index + 1];
+                score += self.sum_of_balls_in_frame(frame_index);
                 frame_index += 2;
             }
         }
         score
     }
 
-    fn is_spare(&self, i: usize) -> bool {
-        self.rolls[i] + self.rolls[i + 1] == 10
+    fn is_spare(&self, frame_index: usize) -> bool {
+        self.rolls[frame_index] + self.rolls[frame_index + 1] == 10
     }
 
-    fn is_strike(&self, i: usize) -> bool {
+    fn is_strike(&self, frame_index: usize) -> bool {
         self.rolls[frame_index] == 10
+    }
+
+    fn spare_bonus(&self, frame_index: usize) -> i32 {
+        self.rolls[frame_index + 2]
+    }
+
+    fn strike_bonus(&self, frame_index: usize) -> i32 {
+        self.rolls[frame_index + 1] + self.rolls[frame_index + 2]
+    }
+
+    fn sum_of_balls_in_frame(&self, frame_index: usize) -> i32 {
+        self.rolls[frame_index] + self.rolls[frame_index + 1]
     }
 }
 
@@ -81,7 +93,7 @@ mod tests {
     #[test]
     fn one_strike() {
         let mut game = start();
-        game.roll(10);
+        strike(&mut game);
         game.roll(4);
         game.roll(3);
         many_rolls(&mut game, 0, 16);
@@ -101,5 +113,9 @@ mod tests {
     fn spare(game: &mut Game) {
         game.roll(5);
         game.roll(5);
+    }
+
+    fn strike(game: &mut Game) {
+        game.roll(10);
     }
 }
