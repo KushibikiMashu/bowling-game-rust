@@ -6,13 +6,13 @@
 
 #[derive(Default)]
 struct Game {
-    rolls: [i32; 20],
+    rolls: [i32; 21],
     current_roll: usize,
 }
 
 impl Game {
     fn new() -> Self {
-        Game { rolls: [0; 20], current_roll: 0 }
+        Game { rolls: [0; 21], current_roll: 0 }
     }
 
     fn roll(&mut self, pins: i32) -> &mut Self {
@@ -22,7 +22,18 @@ impl Game {
     }
 
     fn score(&self) -> i32 {
-        self.rolls.iter().sum()
+        let mut score = 0;
+        let mut i = 0;
+        for _ in 0..10 {
+            if self.rolls[i] + self.rolls[i + 1] == 10 {
+                score += 10 + self.rolls[i + 2];
+                i += 2;
+            } else {
+                score += self.rolls[i] + self.rolls[i + 1];
+                i += 2;
+            }
+        }
+        score
     }
 }
 
