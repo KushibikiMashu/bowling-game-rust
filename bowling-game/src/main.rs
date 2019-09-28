@@ -23,17 +23,21 @@ impl Game {
 
     fn score(&self) -> i32 {
         let mut score = 0;
-        let mut i = 0;
+        let mut frame_index = 0;
         for _ in 0..10 {
-            if self.rolls[i] + self.rolls[i + 1] == 10 {
-                score += 10 + self.rolls[i + 2];
-                i += 2;
+            if self.is_spare(frame_index) {
+                score += 10 + self.rolls[frame_index + 2];
+                frame_index += 2;
             } else {
-                score += self.rolls[i] + self.rolls[i + 1];
-                i += 2;
+                score += self.rolls[frame_index] + self.rolls[frame_index + 1];
+                frame_index += 2;
             }
         }
         score
+    }
+
+    fn is_spare(&self, i: usize) -> bool {
+        self.rolls[i] + self.rolls[i + 1] == 10
     }
 }
 
@@ -61,11 +65,20 @@ mod tests {
     #[test]
     fn one_spare() {
         let mut game = start();
-        game.roll(5);
-        game.roll(5);
+        spare(&mut game);
         game.roll(3);
         many_rolls(&mut game, 0, 17);
         assert_eq!(16, game.score())
+    }
+
+    #[test]
+    fn one_strike() {
+        let mut game = start();
+        game.roll(10);
+        game.roll(4);
+        game.roll(3);
+        many_rolls(&mut game, 0, 16);
+        assert_eq!(24, game.score());
     }
 
     fn start() -> Game {
@@ -76,5 +89,10 @@ mod tests {
         for _ in 0..n {
             game.roll(pins);
         }
+    }
+
+    fn spare(game: &mut Game) {
+        game.roll(5);
+        game.roll(5);
     }
 }
