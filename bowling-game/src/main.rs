@@ -6,17 +6,23 @@
 
 #[derive(Default)]
 struct Game {
-    score: u32
+    rolls: [i32; 20],
+    current_roll: usize,
 }
 
 impl Game {
     fn new() -> Self {
-        Game { score: 0 }
+        Game { rolls: [0; 20], current_roll: 0 }
     }
 
-    fn roll(&mut self, pins: u32) -> &mut Self {
-        self.score += pins;
+    fn roll(&mut self, pins: i32) -> &mut Self {
+        self.rolls[self.current_roll] = pins;
+        self.current_roll += 1;
         self
+    }
+
+    fn score(&self) -> i32 {
+        self.rolls.iter().sum()
     }
 }
 
@@ -31,21 +37,31 @@ mod tests {
     fn all_gutter() {
         let mut game = start();
         many_rolls(&mut game, 0, 20);
-        assert_eq!(0, game.score)
+        assert_eq!(0, game.score())
     }
 
     #[test]
     fn all_one_pin() {
         let mut game = start();
         many_rolls(&mut game, 1, 20);
-        assert_eq!(20, game.score);
+        assert_eq!(20, game.score())
+    }
+
+    #[test]
+    fn one_spare() {
+        let mut game = start();
+        game.roll(5);
+        game.roll(5);
+        game.roll(3);
+        many_rolls(&mut game, 0, 17);
+        assert_eq!(16, game.score())
     }
 
     fn start() -> Game {
         Game::new()
     }
 
-    fn many_rolls(game: &mut Game, pins: u32, n: u32) {
+    fn many_rolls(game: &mut Game, pins: i32, n: i32) {
         for _ in 0..n {
             game.roll(pins);
         }
