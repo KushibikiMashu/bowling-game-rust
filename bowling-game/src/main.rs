@@ -29,19 +29,25 @@ mod tests {
 
     #[test]
     fn all_gutter() {
-        let mut game = Game::new();
-        for _ in 0..20 {
-            game.roll(0);
-        }
+        let mut game = start();
+        many_rolls(&mut game, 0, 20);
         assert_eq!(0, game.score)
     }
 
     #[test]
-    fn all_one_pin(){
-        let mut game = Game::new();
-        for _ in 0..20 {
-            game.roll(1);
-        }
+    fn all_one_pin() {
+        let mut game = start();
+        many_rolls(&mut game, 1, 20);
         assert_eq!(20, game.score);
+    }
+
+    fn start() -> Game {
+        Game::new()
+    }
+
+    fn many_rolls(game: &mut Game, pins: u32, n: u32) {
+        for _ in 0..n {
+            game.roll(pins);
+        }
     }
 }
